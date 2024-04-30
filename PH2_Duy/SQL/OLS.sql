@@ -1,0 +1,435 @@
+-- TAO PDBQLDLNB
+-- CHECK IF OLS TURNED ON - NAY PHAI CHAY BANG ACC PDBQLDLNB_SYS (HOAC DANG NHAP = ACC SYS, ALTER SESSION VAO PDBQLDLNB)
+ALTER SESSION SET CONTAINER=PDBQLDLNB;
+SHOW CON_NAME;
+
+SELECT VALUE FROM v$option WHERE parameter = 'Oracle Label Security';
+SELECT status FROM dba_ols_status WHERE name = 'OLS_CONFIGURE_STATUS';
+
+
+GRANT THONGBAO_POLICY_DBA TO ADMIN;
+-- CHUA THI BAT OLS
+EXEC LBACSYS.CONFIGURE_OLS;
+EXEC LBACSYS.OLS_ENFORCEMENT.ENABLE_OLS;
+
+SELECT ROLE FROM SESSION_ROLES;
+
+SELECT userenv('ISDBA') FROM dual;
+
+SHUTDOWN IMMEDIATE;
+STARTUP;
+
+-- KIEM TRA PDBQLDLNB CO XUAT HIEN KHONG - CO THI MOI DUNG  
+select * from v$services;
+
+-- UNLOCK LBACSYS (OLS ADMIN) -- CHAY BANG ACC SYS TRONG COMMON DB (KHONG PHAI ACC SYS TRONG PDB)
+ALTER USER lbacsys IDENTIFIED BY lbacsys ACCOUNT UNLOCK;
+
+-- BAT DATABASE (NEU CHUA BAT)
+ALTER PLUGGABLE DATABASE PDBQLDLNB OPEN READ WRITE;
+
+-- CHUYEN CONTAINER SANG PDBQLDLNB
+ALTER SESSION SET CONTAINER=PDBQLDLNB;
+SHOW CON_NAME;
+
+--TAO USER TEST OLS = ADMIN_OLS
+---> TAO ADMIN OLS VA CAP QUYEN CHO ADMIN_OLS
+CREATE USER ADMIN_OLS IDENTIFIED BY 123 CONTAINER = CURRENT;
+
+-- CAP QUYEN CHO USER TEST OLS
+GRANT CONNECT,RESOURCE TO ADMIN_OLS; --CAP QUYEN CONNECT V? RESOURCE
+GRANT UNLIMITED TABLESPACE TO ADMIN_OLS; --CAP QUOTA CHO ADMIN_OLS
+GRANT SELECT ANY DICTIONARY TO ADMIN_OLS; --CAP QUYEN ACCC DICTIONARY
+
+---> CAP QUYEN EXECUTE CHO ADMIN_OLS
+GRANT EXECUTE ON LBACSYS.SA_COMPONENTS TO ADMIN_OLS WITH GRANT OPTION;
+GRANT EXECUTE ON LBACSYS.sa_user_admin TO ADMIN_OLS WITH GRANT OPTION;
+GRANT EXECUTE ON LBACSYS.sa_label_admin TO ADMIN_OLS WITH GRANT OPTION;
+GRANT EXECUTE ON sa_policy_admin TO ADMIN_OLS WITH GRANT OPTION;
+GRANT EXECUTE ON char_to_label TO ADMIN_OLS WITH GRANT OPTION;
+
+---> ADD ADMIN_OLS VAO LBAC_DBA
+GRANT LBAC_DBA TO ADMIN_OLS;
+GRANT EXECUTE ON sa_sysdba TO ADMIN_OLS;
+GRANT EXECUTE ON TO_LBAC_DATA_LABEL TO ADMIN_OLS; -- CAP QUYEN THUC THI
+
+
+-- BAT DAU TAO CHINH SACH OLS (CONNECT VAO TAI KHOAN ADMIN_OLS)
+-- TAO CHINH SACH OLS 
+BEGIN
+    SA_SYSDBA.CREATE_POLICY(
+        policy_name => 'ThongBao_policy',
+        column_name => 'Role_label');
+END;
+/
+EXEC SA_SYSDBA.DROP_POLICY ('ThongBao_policy');
+
+--ENABLE POLICY VUA TAO -> KHOI DONG LAI SQLDEV
+EXEC SA_SYSDBA.ENABLE_POLICY ('ThongBao_policy');
+/
+
+-- TAO COMPONENT CUA LABEL
+--->TAO LEVEL
+EXECUTE SA_COMPONENTS.CREATE_LEVEL('ThongBao_policy',100,'TK','TRUONG_KHOA');
+EXECUTE SA_COMPONENTS.CREATE_LEVEL('ThongBao_policy',50,'TDV','TRUONG_DON_VI');
+EXECUTE SA_COMPONENTS.CREATE_LEVEL('ThongBao_policy',40,'GVI','GIANG_VIEN');
+EXECUTE SA_COMPONENTS.CREATE_LEVEL('ThongBao_policy',30,'GVU','GIAO_VU');
+EXECUTE SA_COMPONENTS.CREATE_LEVEL('ThongBao_policy',20,'NV','NHAN_VIEN');
+EXECUTE SA_COMPONENTS.CREATE_LEVEL('ThongBao_policy',10,'SV','SINH_VIEN');
+--->TAO COMPARTMENT
+EXECUTE SA_COMPONENTS.CREATE_COMPARTMENT('ThongBao_policy',100,'HTTT','HE_THONG_THONG_TIN');
+EXECUTE SA_COMPONENTS.CREATE_COMPARTMENT('ThongBao_policy',90,'CNPM','CONG_NGHE_PHAN_MEM');
+EXECUTE SA_COMPONENTS.CREATE_COMPARTMENT('ThongBao_policy',80,'KHMT','KHOA_HOC_MAY_TINH');
+EXECUTE SA_COMPONENTS.CREATE_COMPARTMENT('ThongBao_policy',70,'CNTT','CONG_NGHE_THONG_TIN');
+EXECUTE SA_COMPONENTS.CREATE_COMPARTMENT('ThongBao_policy',60,'TGMT','THI_GIAC_MAY_TINH');
+EXECUTE SA_COMPONENTS.CREATE_COMPARTMENT('ThongBao_policy',50,'MMT','MANG_MAY_TINH');
+--->TAO GROUP
+EXECUTE SA_COMPONENTS.CREATE_GROUP('ThongBao_policy',20,'CS1','CO SO 1');
+EXECUTE SA_COMPONENTS.CREATE_GROUP('ThongBao_policy',10,'CS2','CO SO 2');
+/
+
+-- KIEM TRA XEM DA TAO THANH CONG LEVEL, COMPARTMENTS, GROUPS CHO CHINH SACH OLS CHUA (CHAY BANG CADMIN)
+SELECT * FROM DBA_SA_LEVELS;
+SELECT * FROM DBA_SA_COMPARTMENTS;
+SELECT * FROM DBA_SA_GROUPS;
+SELECT * FROM DBA_SA_GROUP_HIERARCHY;
+/
+
+--------------------------------------------------
+-- TAO BANG THONG BAO = ADMIN_OLS
+CREATE TABLE THONGBAO
+(
+    NOIDUNG NVARCHAR2(2000),
+    THOIGIAN TIMESTAMP,
+    PRIMARY KEY(THOIGIAN)
+);
+/
+
+-- DROP TABLE THONG BAO
+DROP TABLE THONGBAO;
+/
+
+---------------------------------------------------- APPLY CHINH SACH OLS CHO TABLE
+-- APPLY CHINH SACH CHO TABLE
+BEGIN
+    SA_POLICY_ADMIN.APPLY_TABLE_POLICY (
+        policy_name => 'ThongBao_policy',
+        schema_name => 'ADMIN_OLS',
+        table_name => 'THONGBAO',
+        table_options => 'READ_CONTROL',
+        predicate => NULL
+    
+    );
+END;
+/
+
+-- REMOVE CHINH SACH KHOI TABLE
+BEGIN
+    SA_POLICY_ADMIN.REMOVE_TABLE_POLICY('ThongBao_policy','ADMIN_OLS','THONGBAO');
+END;
+/
+
+---------------------------------------------------- KIEM TRA LABEL
+
+SELECT * FROM ALL_SA_USER_LABELS; -- XEM TAT CA LABEL DUOC GAN CHO USER
+SELECT * FROM ALL_SA_LABELS; -- XEM TAT CA LABEL TRONG DATABASE
+
+---------------------------------------------------- TAO LABEL
+
+-- LEVEL: TK > TDV > GVI > GVU > NV > SV
+-- COMPARTMENT: HTTT,CNPHM,KHMT,CNTT,TGMT,MMT
+-- GROUP: CS1, CS2
+BEGIN
+    -- A) TRUONG KHOA CO THE DOC TOAN BO THONG BAO
+    SA_LABEL_ADMIN.CREATE_LABEL (
+       policy_name     => 'ThongBao_policy',
+       label_tag       => 1,
+       label_value     => 'TK:HTTT,CNPM,KHMT,CNTT,TGMT,MMT:CS1,CS2',
+       data_label      => TRUE);
+
+   -- B) TRUONG BO MON CO SO 2 CO THE DOC DUOC TOAN BO THONG BAO DANH CHO TRUONG BO MON KHONG PHAN BIEN VI TRI DIA LY
+   SA_LABEL_ADMIN.CREATE_LABEL (
+       policy_name     => 'ThongBao_policy',
+       label_tag       => 2,
+       label_value     => 'TDV::CS1,CS2',
+       data_label      => TRUE);
+       
+    -- C) GIAO VU CO THE DOC TOAN BO THONG BAO CHO GIAO VU 
+    SA_LABEL_ADMIN.CREATE_LABEL (
+       policy_name     => 'ThongBao_policy',
+       label_tag       => 3,
+       label_value     => 'GVU',
+       data_label      => TRUE);
+       
+    -- D) t1 CO THE DUOC DOC BOI CAC TRUONG DON VI
+    SA_LABEL_ADMIN.CREATE_LABEL (
+       policy_name     => 'ThongBao_policy',
+       label_tag       => 4,
+       label_value     => 'TDV',
+       data_label      => TRUE);
+       
+    -- E) t2 CO THE DUOC DOC BOI CAC SINH VIEN, THUOC NGANH HTTT, CO SO 1
+    SA_LABEL_ADMIN.CREATE_LABEL (
+       policy_name     => 'ThongBao_policy',
+       label_tag       => 5,
+       label_value     => 'SV:HTTT:CS1',
+       data_label      => TRUE);
+      
+    -- F) t3 CO THE DUOC DOC BOI CAC TRUONG BO MON, THUOC NGANH KHMT, CO SO 1
+    SA_LABEL_ADMIN.CREATE_LABEL (
+       policy_name     => 'ThongBao_policy',
+       label_tag       => 6,
+       label_value     => 'TDV:KHMT:CS1',
+       data_label      => TRUE);
+   
+    -- G) t4 CO THE DUOC DOC BOI CAC TRUONG BO MON, THUOC NGANH KHMT, CO SO 1 VA CA CO SO 2
+    SA_LABEL_ADMIN.CREATE_LABEL (
+       policy_name     => 'ThongBao_policy',
+       label_tag       => 7,
+       label_value     => 'TDV:KHMT',
+       data_label      => TRUE);
+       
+    -- H) CAC CHINH SACH TU DE XUAT
+        -- t5 CO THE DUOC DOC BOI TOAN BO SINH VIEN
+     SA_LABEL_ADMIN.CREATE_LABEL (
+       policy_name     => 'ThongBao_policy',
+       label_tag       => 8,
+       label_value     => 'SV',
+       data_label      => TRUE);
+        --t6 CO THE DUOC DOC BOI TOAN BO NHAN VIEN, KHONG QUAN TAM THUOC NGANH NAO, CO SO NAO
+    SA_LABEL_ADMIN.CREATE_LABEL (
+       policy_name     => 'ThongBao_policy',
+       label_tag       => 9,
+       label_value     => 'NV',
+       data_label      => TRUE);
+       --t7 CO THE DOC DUOC BOI GIANG VIEN, BO MON HTTT, O CO SO 2
+    SA_LABEL_ADMIN.CREATE_LABEL (
+       policy_name     => 'ThongBao_policy',
+       label_tag       => 11,
+       label_value     => 'GVI:HTTT:CS2',
+       data_label      => TRUE);    
+END;
+/
+
+-- DROP LABEL
+BEGIN
+    SA_LABEL_ADMIN.DROP_LABEL (
+       policy_name      => 'ThongBao_policy',
+       label_tag        => 7);
+END;
+
+
+--------------------------------------------------TEST
+-- CHAY BANG CADMIN
+--CREATE ROLE ROLE_SV;
+--CREATE ROLE ROLE_TK;
+--CREATE ROLE TRUONGDONVI;
+--CREATE ROLE GIAOVU;
+--CREATE ROLE GIANG_VIEN;
+--CREATE ROLE NHAN_VIEN;
+/
+--ROLE_SV -- SINH VIEN
+--ROLE_TK -- TRUONG KHOA
+--TRUONGDONVI -- TRUONG DON VI
+--GIAOVU -- GIAO VU
+--GIANG_VIEN -- GIANG VIEN
+--NHAN_VIEN -- NHAN VIEN
+
+--CREATE USER SV_TEST IDENTIFIED BY 123;
+--GRANT CONNECT TO SV_TEST;
+--GRANT ROLE_SV TO SV_TEST;
+
+-- CHAY BANG ADMIN_OLS
+GRANT SELECT ON THONGBAO TO ROLE_SV;
+GRANT SELECT ON THONGBAO TO ROLE_TK;
+GRANT SELECT ON THONGBAO TO TRUONGDONVI;
+GRANT SELECT ON THONGBAO TO GIAOVU;
+GRANT SELECT ON THONGBAO TO GIANG_VIEN;
+GRANT SELECT ON THONGBAO TO NHAN_VIEN_CO_BAN;
+/
+
+-- THEM DATA TEST
+/
+
+--UPDATE THONGBAO SET STT = STT;
+--COMMIT;
+
+
+-- GAN LABEL CHO USER
+--BEGIN
+--    SA_USER_ADMIN.SET_USER_LABELS('ThongBao_policy','ADMIN_OLS','TK:HTTT:CS1');
+--    SA_USER_ADMIN.SET_USER_LABELS('ThongBao_policy','NV0001','SV');
+--END;
+--/
+
+-- KIEM TRA LABEL CUA SESSION HIEN TAI
+--SELECT SA_SESSION.LABEL ('ThongBao_policy') FROM DUAL;
+
+-- CHAY BANG USER TEST
+SELECT * FROM ADMIN_OLS.THONGBAO;
+
+------------------------------------------------------- PROC CHUC NANG PHAN MEM
+-- PROC TAO DATA LABEL 
+--SELECT * FROM ALL_SA_LABELS;
+CREATE OR REPLACE PROCEDURE CreateDataLabelOLS(
+    p_label_value IN VARCHAR2
+) 
+AS
+    p_policy_name VARCHAR2(100) := 'ThongBao_policy';
+    p_label_tag  NUMBER;
+BEGIN
+    p_label_tag := CHAR_TO_LABEL(p_policy_name,p_label_value);
+    SA_LABEL_ADMIN.ALTER_LABEL (
+       policy_name       => p_policy_name,
+        label_tag           => p_label_tag,
+       new_data_label      => TRUE);
+    RETURN;
+END;
+/
+
+--DROP PROCEDURE CreateDataLabelOLS;
+
+-- PROC TAO THONG BAO
+CREATE OR REPLACE PROCEDURE ThemThongBao
+     (NOIDUNG IN VARCHAR2,
+     IN_LABEL IN VARCHAR2)
+IS 
+BEGIN
+    INSERT INTO THONGBAO VALUES(NOIDUNG,CURRENT_TIMESTAMP,CHAR_TO_LABEL('ThongBao_policy',IN_LABEL));
+END;
+/
+
+--GRANT EXECUTE ON CreateDataLabelOLS TO ADMIN;
+--revoke execute on CreateDataLabelOLS from GIAOVU;
+--GRANT EXECUTE ON ThemThongBao TO GIAOVU;
+EXEC admin_ols.CreateDataLabelOLS('SV');
+--EXEC ThemThongBao('THONG BAO DANH CHO TRUONG BO MON, O C')
+EXEC ThemThongBao('THONG BAO DANH CHO GIAO VU1','GVU');
+EXEC ThemThongBao('DOC BOI TRUONG DON VI','TDV');
+EXEC ThemThongBao('TOAN BO SINH VIEN, THUOC NGANH HTTT, O CS1 DOC DUOC','SV:HTTT:CS1');
+EXEC ThemThongBao('DOC BOI TRUONG BO MON, THUOC NGANH KHMT, O CS1','TDV:KHMT:CS1');
+EXEC ThemThongBao('DOC DUOC BOI TRUONG BO MON, THUOC NGANH KHMT,O CA CS1 VA CS2','TDV:KHMT');
+EXEC ThemThongBao('TOAN BO SINH VIEN DOC DUOC','SV');
+EXEC ThemThongBao('TOAN BO NHAN VIEN DOC DUOC','NV');
+EXEC ThemThongBao('DOC DUOC BOI GIANG VIEN HTTT O CO SO 2','GVI:HTTT:CS2');
+/
+
+-- PROC THEM LABEL CHO SV
+SET SERVEROUTPUT ON;
+/
+CREATE OR REPLACE PROCEDURE GrantLabelToSV
+AS
+    MASV1 VARCHAR2(100);
+    COSO1 VARCHAR2(50);
+    MANGANH1 VARCHAR2(100);
+    CURSOR CUR IS (SELECT  MASV, MANGANH, COSO
+                    FROM ADMIN.SINHVIEN);
+    STRLABEL VARCHAR2(200);
+BEGIN
+    OPEN CUR;
+    LOOP
+        BEGIN
+            FETCH CUR INTO MASV1,MANGANH1,COSO1;
+            EXIT WHEN CUR%NOTFOUND;
+            STRLABEL := 'SV:' || RTRIM(MANGANH1) ||':' || RTRIM(COSO1);
+--            DBMS_OUTPUT.PUT_LINE(MASV1|| '_'|| STRLABEL);
+            SA_USER_ADMIN.SET_USER_LABELS('ThongBao_policy',MASV1,STRLABEL);
+        END;
+    END LOOP;
+    CLOSE CUR;
+END;
+/
+EXEC GrantLabelToSV;
+/
+CREATE OR REPLACE PROCEDURE GrantLabelToNV
+AS
+    MANV VARCHAR2(10);
+    COSO VARCHAR2(7);
+    MADV VARCHAR2(7);
+    VAITRO NVARCHAR2(20);
+    CURSOR CUR IS (SELECT  MANV ,VAITRO , MADV, COSO
+                    FROM ADMIN.NHANSU);
+    STRLABEL VARCHAR2(100);
+BEGIN
+    OPEN CUR;
+    LOOP
+        BEGIN
+            FETCH CUR INTO MANV,VAITRO, MADV, COSO;
+            EXIT WHEN CUR%NOTFOUND;
+                BEGIN
+                    -- HANDLE DON VI LA VPK
+                    MADV := RTRIM(MADV);
+                    IF (MADV = 'VPK') THEN
+                        MADV := '';
+                    END IF;
+                    -- VAI TRO
+                    IF (VAITRO = 'TRUONG KHOA') THEN
+                        STRLABEL :=  'TK:HTTT,CNPM,KHMT,CNTT,TGMT,MMT:CS1,CS2';
+                    ELSIF  (VAITRO = 'TRUONG DON VI') THEN
+                        IF (COSO = 'CS2') THEN 
+                            STRLABEL :=  'TDV:'|| MADV ||':CS1,CS2';
+                        ELSE
+                            STRLABEL :=  'TDV:'|| MADV ||':CS1';
+                        END IF;
+                    ELSIF (VAITRO = 'GIANG VIEN') THEN
+                        STRLABEL :=  'GVI:'|| MADV ||':' || RTRIM(COSO);
+                    ELSIF (VAITRO = 'GIAO VU') THEN 
+                        STRLABEL :=  'GVU::' || RTRIM(COSO);
+                    ELSIF (VAITRO = 'NHAN VIEN CO BAN') THEN
+                        STRLABEL :=  'NV:'|| MADV || ':' || RTRIM(COSO);
+                    END IF;
+                    --GAN QUYEN CHO USER;
+--                    DBMS_OUTPUT.PUT_LINE(MANV|| '_'|| STRLABEL);
+                    SA_USER_ADMIN.SET_USER_LABELS('ThongBao_policy',MANV,STRLABEL);
+                 EXCEPTION
+                    WHEN OTHERS THEN
+                        DBMS_OUTPUT.PUT_LINE(MANV|| '_'|| STRLABEL);
+                        NULL; -- You can log or handle exceptions here
+                END;
+        END;
+    END LOOP;
+    CLOSE CUR;
+END;
+/
+EXEC GrantLabelToNV
+/
+GRANT SELECT ON ADMIN.SINHVIEN TO ADMIN_OLS;
+GRANT SELECT ON ADMIN.NHANSU TO ADMIN_OLS;
+grant EXEMPT ACCESS POLICY to ADMIN_OLS;
+/
+SELECT * FROM ADMIN.NHANSU;
+SELECT * FROM ADMIN.SINHVIEN;
+SELECT * FROM DBA_USERS;
+/
+CREATE OR REPLACE PROCEDURE DROP_USER_SV
+AS
+    USERNAME VARCHAR(10);
+    SQLS VARCHAR(200);
+    CURSOR CUR_NHANSU IS (SELECT  MANV
+                    FROM ADMIN.NHANSU);
+    CURSOR CUR_SINHVIEN IS (SELECT  MASV
+                    FROM ADMIN.SINHVIEN);
+BEGIN
+--    EXECUTE IMMEDIATE 'ALTER SESSION SET "_ORACLE_SCRIPT" = FALSE';
+    OPEN CUR_NHANSU;
+        LOOP
+            BEGIN
+                FETCH CUR_NHANSU INTO USERNAME;
+                EXIT WHEN CUR_NHANSU%NOTFOUND;
+                BEGIN 
+                    EXECUTE IMMEDIATE 'DROP USER ' ||USERNAME || ' CASCADE';
+                    DBMS_OUTPUT.PUT_LINE(USERNAME|| '_');
+                EXCEPTION
+                    WHEN OTHERS THEN
+                        DBMS_OUTPUT.PUT_LINE(USERNAME|| '_');
+                        NULL; -- You can log or handle exceptions here
+                END;
+            END;
+        END LOOP;
+--        EXECUTE IMMEDIATE 'ALTER SESSION SET "_ORACLE_SCRIPT" = TRUE';
+    CLOSE CUR_NHANSU;
+END;
+/
+EXEC DROP_USER_SV;
+--GRANT SELECT ON SINHVIEN TO ADMIN_OLS;
+--GRANT SELECT ON NHANSU TO ADMIN_OLS;

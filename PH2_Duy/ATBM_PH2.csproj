@@ -1,0 +1,513 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8FE28ACF-0CFD-4E5E-9CCF-43283990CF22}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>PH2_Duy</RootNamespace>
+    <AssemblyName>PH2_Duy</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.0.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.0.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.6.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Oracle.ManagedDataAccess, Version=4.122.21.1, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
+      <HintPath>..\packages\Oracle.ManagedDataAccess.21.14.0\lib\net462\Oracle.ManagedDataAccess.dll</HintPath>
+    </Reference>
+    <Reference Include="Oracle.ManagedDataAccess.EntityFramework, Version=6.122.21.1, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
+      <HintPath>..\packages\Oracle.ManagedDataAccess.EntityFramework.21.9.0\lib\net462\Oracle.ManagedDataAccess.EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Formats.Asn1, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Formats.Asn1.8.0.0\lib\net462\System.Formats.Asn1.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Encodings.Web, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encodings.Web.6.0.0\lib\net461\System.Text.Encodings.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Json, Version=6.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Json.6.0.1\lib\net461\System.Text.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AuditDangKy.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AuditDangKy.Designer.cs">
+      <DependentUpon>AuditDangKy.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AuditKichHoat.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AuditKichHoat.Designer.cs">
+      <DependentUpon>AuditKichHoat.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AuditNhanSu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AuditNhanSu.Designer.cs">
+      <DependentUpon>AuditNhanSu.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AuditOnOff.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AuditOnOff.Designer.cs">
+      <DependentUpon>AuditOnOff.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ChiTietAudit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ChiTietAudit.Designer.cs">
+      <DependentUpon>ChiTietAudit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HOCPHAN\CapNhatHP_GVu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HOCPHAN\CapNhatHP_GVu.Designer.cs">
+      <DependentUpon>CapNhatHP_GVu.cs</DependentUpon>
+    </Compile>
+    <Compile Include="KetQuaAudit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="KetQuaAudit.Designer.cs">
+      <DependentUpon>KetQuaAudit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NHANVIEN\CapNhatNV.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NHANVIEN\CapNhatNV.Designer.cs">
+      <DependentUpon>CapNhatNV.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OffAudit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OffAudit.Designer.cs">
+      <DependentUpon>OffAudit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PHANCONG\CapNhatPC.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PHANCONG\CapNhatPC.Designer.cs">
+      <DependentUpon>CapNhatPC.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PHANCONG\ChinhSuaPC.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PHANCONG\ChinhSuaPC.Designer.cs">
+      <DependentUpon>ChinhSuaPC.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DashBoardNV.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DashBoardNV.Designer.cs">
+      <DependentUpon>DashBoardNV.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DashBoardSV.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DashBoardSV.Designer.cs">
+      <DependentUpon>DashBoardSV.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Chung\fAddNotification.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Chung\fAddNotification.Designer.cs">
+      <DependentUpon>fAddNotification.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NHANVIEN\Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NHANVIEN\Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GIAOVIEN\CapNhatDiemSinhVien.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GIAOVIEN\CapNhatDiemSinhVien.Designer.cs">
+      <DependentUpon>CapNhatDiemSinhVien.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GIAOVU\CapNhatDangKyGV.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GIAOVU\CapNhatDangKyGV.Designer.cs">
+      <DependentUpon>CapNhatDangKyGV.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SINHVIEN\DanhSachHocPhanSV.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SINHVIEN\DanhSachHocPhanSV.Designer.cs">
+      <DependentUpon>DanhSachHocPhanSV.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SINHVIEN\KeHoachMoHPSV.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SINHVIEN\KeHoachMoHPSV.Designer.cs">
+      <DependentUpon>KeHoachMoHPSV.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SINHVIEN\KetQuaDangKyHP_SV.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SINHVIEN\KetQuaDangKyHP_SV.Designer.cs">
+      <DependentUpon>KetQuaDangKyHP_SV.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SINHVIEN\DangKyHocPhanSV.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SINHVIEN\DangKyHocPhanSV.Designer.cs">
+      <DependentUpon>DangKyHocPhanSV.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SINHVIEN\fAllStudentInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SINHVIEN\fAllStudentInfo.Designer.cs">
+      <DependentUpon>fAllStudentInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DONVI\fDeptInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DONVI\fDeptInfo.Designer.cs">
+      <DependentUpon>fDeptInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Chung\fEmpInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Chung\fEmpInfo.Designer.cs">
+      <DependentUpon>fEmpInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DONVI\fInsertDept.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DONVI\fInsertDept.Designer.cs">
+      <DependentUpon>fInsertDept.cs</DependentUpon>
+    </Compile>
+    <Compile Include="KHMO\fInsertKHMO.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="KHMO\fInsertKHMO.Designer.cs">
+      <DependentUpon>fInsertKHMO.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SINHVIEN\fInsertStudent.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SINHVIEN\fInsertStudent.Designer.cs">
+      <DependentUpon>fInsertStudent.cs</DependentUpon>
+    </Compile>
+    <Compile Include="KHMO\fKHMOInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="KHMO\fKHMOInfo.Designer.cs">
+      <DependentUpon>fKHMOInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Chung\fNotification.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Chung\fNotification.Designer.cs">
+      <DependentUpon>fNotification.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DONVI\fUpdateDept.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DONVI\fUpdateDept.Designer.cs">
+      <DependentUpon>fUpdateDept.cs</DependentUpon>
+    </Compile>
+    <Compile Include="KHMO\fUpdateKHMO.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="KHMO\fUpdateKHMO.Designer.cs">
+      <DependentUpon>fUpdateKHMO.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Chung\fUpdatePhoneNumber.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Chung\fUpdatePhoneNumber.Designer.cs">
+      <DependentUpon>fUpdatePhoneNumber.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SINHVIEN\fUpdateStudent.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SINHVIEN\fUpdateStudent.Designer.cs">
+      <DependentUpon>fUpdateStudent.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Chung\LoginForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Chung\LoginForm.Designer.cs">
+      <DependentUpon>LoginForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SINHVIEN\ThongtinSV.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SINHVIEN\ThongtinSV.Designer.cs">
+      <DependentUpon>ThongtinSV.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HOCPHAN\ThemHP.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HOCPHAN\ThemHP.Designer.cs">
+      <DependentUpon>ThemHP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NHANVIEN\ThemNV.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NHANVIEN\ThemNV.Designer.cs">
+      <DependentUpon>ThemNV.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PHANCONG\ThemPC.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PHANCONG\ThemPC.Designer.cs">
+      <DependentUpon>ThemPC.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HOCPHAN\XemHP_NV.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HOCPHAN\XemHP_NV.Designer.cs">
+      <DependentUpon>XemHP_NV.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PHANCONG\XemPhanCong.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PHANCONG\XemPhanCong.Designer.cs">
+      <DependentUpon>XemPhanCong.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ThemAudit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ThemAudit.Designer.cs">
+      <DependentUpon>ThemAudit.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="AuditDangKy.resx">
+      <DependentUpon>AuditDangKy.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AuditKichHoat.resx">
+      <DependentUpon>AuditKichHoat.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AuditNhanSu.resx">
+      <DependentUpon>AuditNhanSu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AuditOnOff.resx">
+      <DependentUpon>AuditOnOff.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ChiTietAudit.resx">
+      <DependentUpon>ChiTietAudit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HOCPHAN\CapNhatHP_GVu.resx">
+      <DependentUpon>CapNhatHP_GVu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="KetQuaAudit.resx">
+      <DependentUpon>KetQuaAudit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NHANVIEN\CapNhatNV.resx">
+      <DependentUpon>CapNhatNV.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OffAudit.resx">
+      <DependentUpon>OffAudit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PHANCONG\CapNhatPC.resx">
+      <DependentUpon>CapNhatPC.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PHANCONG\ChinhSuaPC.resx">
+      <DependentUpon>ChinhSuaPC.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DashBoardNV.resx">
+      <DependentUpon>DashBoardNV.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DashBoardSV.resx">
+      <DependentUpon>DashBoardSV.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Chung\fAddNotification.resx">
+      <DependentUpon>fAddNotification.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NHANVIEN\Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GIAOVIEN\CapNhatDiemSinhVien.resx">
+      <DependentUpon>CapNhatDiemSinhVien.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GIAOVU\CapNhatDangKyGV.resx">
+      <DependentUpon>CapNhatDangKyGV.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SINHVIEN\DanhSachHocPhanSV.resx">
+      <DependentUpon>DanhSachHocPhanSV.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SINHVIEN\KeHoachMoHPSV.resx">
+      <DependentUpon>KeHoachMoHPSV.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SINHVIEN\KetQuaDangKyHP_SV.resx">
+      <DependentUpon>KetQuaDangKyHP_SV.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SINHVIEN\DangKyHocPhanSV.resx">
+      <DependentUpon>DangKyHocPhanSV.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SINHVIEN\fAllStudentInfo.resx">
+      <DependentUpon>fAllStudentInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DONVI\fDeptInfo.resx">
+      <DependentUpon>fDeptInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Chung\fEmpInfo.resx">
+      <DependentUpon>fEmpInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DONVI\fInsertDept.resx">
+      <DependentUpon>fInsertDept.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="KHMO\fInsertKHMO.resx">
+      <DependentUpon>fInsertKHMO.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SINHVIEN\fInsertStudent.resx">
+      <DependentUpon>fInsertStudent.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="KHMO\fKHMOInfo.resx">
+      <DependentUpon>fKHMOInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Chung\fNotification.resx">
+      <DependentUpon>fNotification.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DONVI\fUpdateDept.resx">
+      <DependentUpon>fUpdateDept.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="KHMO\fUpdateKHMO.resx">
+      <DependentUpon>fUpdateKHMO.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Chung\fUpdatePhoneNumber.resx">
+      <DependentUpon>fUpdatePhoneNumber.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SINHVIEN\fUpdateStudent.resx">
+      <DependentUpon>fUpdateStudent.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Chung\LoginForm.resx">
+      <DependentUpon>LoginForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="SINHVIEN\ThongtinSV.resx">
+      <DependentUpon>ThongtinSV.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HOCPHAN\ThemHP.resx">
+      <DependentUpon>ThemHP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NHANVIEN\ThemNV.resx">
+      <DependentUpon>ThemNV.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PHANCONG\ThemPC.resx">
+      <DependentUpon>ThemPC.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HOCPHAN\XemHP_NV.resx">
+      <DependentUpon>XemHP_NV.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PHANCONG\XemPhanCong.resx">
+      <DependentUpon>XemPhanCong.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ThemAudit.resx">
+      <DependentUpon>ThemAudit.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="Oracle.DataAccess.Common.Configuration.Section.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Oracle.ManagedDataAccess.Client.Configuration.Section.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Audit\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icon-home.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\home-icon.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\System.Text.Json.6.0.1\build\System.Text.Json.targets" Condition="Exists('..\packages\System.Text.Json.6.0.1\build\System.Text.Json.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\System.Text.Json.6.0.1\build\System.Text.Json.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Text.Json.6.0.1\build\System.Text.Json.targets'))" />
+  </Target>
+</Project>
